@@ -1,0 +1,11 @@
+[package]
+name = "ghostty_animation"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+crossterm = "0.28.1"
+
+[profile.release]
+lto = true
+codegen-units = 1
