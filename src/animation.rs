@@ -1,6 +1,36 @@
 use std::sync::LazyLock;
 
-pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| vec![
+use ratatui::{
+    style::Stylize,
+    text::{Line, Span, Text},
+};
+
+pub const IMAGE_WIDTH: u16 = 100;
+pub const IMAGE_HEIGHT: u16 = 41;
+
+pub static FRAMES: LazyLock<[Text; 235]> = LazyLock::new(|| {
+    let mut frames = Vec::new();
+    for frame in ANIMATION_DATA.iter() {
+        let mut lines = Vec::new();
+        for &line in frame {
+            let mut spans = Vec::new();
+            let chunks = line.split("<color>").flat_map(|x| x.split("</color>"));
+            for (i, chunk) in chunks.enumerate() {
+                if i % 2 == 0 {
+                    spans.push(Span::from(chunk));
+                } else {
+                    spans.push(Span::from(chunk).blue());
+                }
+            }
+            lines.push(Line::from(spans));
+        }
+        frames.push(Text::from(lines));
+    }
+    frames.try_into().unwrap()
+});
+
+pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
+    vec![
     vec![
             "                                                                                                    ",
             "                                                                                                    ",
@@ -10106,4 +10136,5 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| vec![
             "                        <color>++++******==++</color>    <color>++++********++++</color>    <color>++==******+++x</color>                        ",
             "                                                                                                    "
         ]
-]);
+]
+});
