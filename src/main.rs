@@ -52,6 +52,8 @@ fn main() {
                     f.render_widget(frame, area);
                 })
                 .unwrap();
+
+            std::thread::sleep(std::time::Duration::from_micros(MICROS_PER_FRAME.try_into().unwrap()));
         }
     }
 }
