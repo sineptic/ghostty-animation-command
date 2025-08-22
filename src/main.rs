@@ -1,12 +1,11 @@
-use std::{io::stdout, thread, time::SystemTime};
+use std::{
+    io::{stdout, Write},
+    thread,
+    time::SystemTime,
+};
 
 use animation::FRAMES;
 use crossterm::event::{Event, KeyCode};
-use ratatui::{
-    layout::{Constraint, Direction, Flex, Layout},
-    prelude::CrosstermBackend,
-    Terminal,
-};
 
 mod animation;
 
@@ -25,34 +24,45 @@ fn main() {
         }
     });
 
-    let vertical_center = Layout::new(
-        Direction::Vertical,
-        [Constraint::Length(animation::IMAGE_HEIGHT)],
-    )
-    .flex(Flex::Center);
-    let horizontal_center = Layout::new(
-        Direction::Horizontal,
-        [Constraint::Length(animation::IMAGE_WIDTH)],
-    )
-    .flex(Flex::Center);
-
-    let mut terminal = Terminal::new(CrosstermBackend::new(stdout())).unwrap();
     let start = SystemTime::now();
-    const MICROS_PER_FRAME: u128 = 30_000;
+    const MICROS_PER_FRAME: u64 = 30_000;
 
+    let mut stdout = stdout();
+    crossterm::execute!(
+        stdout,
+        crossterm::cursor::Hide,
+        crossterm::terminal::DisableLineWrap
+    )
+    .unwrap();
     loop {
         // Automatically skip frames when render is slow
-        let i = (start.elapsed().unwrap().as_micros() / MICROS_PER_FRAME) as usize;
-        let frame = &FRAMES[i % FRAMES.len()];
-        terminal
-            .draw(|f| {
-                let area = horizontal_center.split(vertical_center.split(f.area())[0])[0];
-                f.render_widget(frame, area);
-            })
-            .unwrap();
+        let frame_number =
+            (start.elapsed().unwrap().as_micros() / MICROS_PER_FRAME as u128) as usize;
+        let frame = &FRAMES[frame_number % FRAMES.len()];
+        let (width, height) = crossterm::terminal::size().unwrap();
+        let width_gap = width.saturating_sub(animation::IMAGE_WIDTH) / 2;
+        let height_gap = height.saturating_sub(animation::IMAGE_HEIGHT) / 2;
 
-        std::thread::sleep(std::time::Duration::from_micros(
-            MICROS_PER_FRAME.try_into().unwrap(),
-        ));
+        crossterm::execute!(
+            stdout,
+            crossterm::terminal::BeginSynchronizedUpdate,
+            crossterm::terminal::Clear(crossterm::terminal::ClearType::All),
+        )
+        .unwrap();
+        for (i, line) in frame
+            .iter()
+            .enumerate()
+            .take_while(|(i, _line)| *i as u16 <= height)
+        {
+            crossterm::execute!(
+                stdout,
+                crossterm::cursor::MoveTo(width_gap, i as u16 + height_gap)
+            )
+            .unwrap();
+            stdout.write_all(line.to_string().as_bytes()).unwrap();
+        }
+        crossterm::execute!(stdout, crossterm::terminal::EndSynchronizedUpdate).unwrap();
+
+        std::thread::sleep(std::time::Duration::from_micros(MICROS_PER_FRAME));
     }
 }

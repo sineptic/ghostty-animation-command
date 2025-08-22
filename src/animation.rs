@@ -1,33 +1,23 @@
 use std::sync::LazyLock;
 
-use ratatui::{
-    style::Stylize,
-    text::{Line, Span, Text},
-};
-
 pub const IMAGE_WIDTH: u16 = 77;
 pub const IMAGE_HEIGHT: u16 = 41;
 
-pub static FRAMES: LazyLock<[Text; 235]> = LazyLock::new(|| {
+pub static FRAMES: LazyLock<[[&str; 41]; 235]> = LazyLock::new(|| {
     ANIMATION_DATA
         .iter()
         .map(|frame| {
             frame
                 .iter()
                 .map(|&line| {
-                    let chunks = line.split("<color>").flat_map(|x| x.split("</color>"));
-                    chunks
-                        .enumerate()
-                        .map(|(i, chunk)| {
-                            if i % 2 == 0 {
-                                Span::from(chunk)
-                            } else {
-                                Span::from(chunk).blue()
-                            }
-                        })
-                        .collect::<Line>()
+                    &*line
+                        .replace("<color>", "\x1b[34m")
+                        .replace("</color>", "\x1b[0m")
+                        .leak()
                 })
-                .collect::<Text>()
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap()
         })
         .collect::<Vec<_>>()
         .try_into()
