@@ -2,7 +2,7 @@ use std::{
     io::stdout,
     sync::atomic::{AtomicBool, Ordering},
     thread,
-    time::SystemTime,
+    time::{Duration, SystemTime},
 };
 
 use animation::FRAMES;
@@ -19,12 +19,18 @@ fn main() {
     let _wrapper = alternate_screen_wrapper::AlternateScreen::enter().unwrap();
     static SHOULD_QUIT: AtomicBool = AtomicBool::new(false);
 
-    thread::spawn(move || loop {
-        if let Event::Key(key) = crossterm::event::read().unwrap() {
-            if key.code == KeyCode::Char('q') {
-                SHOULD_QUIT.store(true, Ordering::SeqCst);
+    thread::spawn(move || {
+        loop {
+            if let Event::Key(key) = crossterm::event::read().unwrap() {
+                if key.code == KeyCode::Char('q') {
+                    SHOULD_QUIT.store(true, Ordering::SeqCst);
+                    break;
+                }
             }
         }
+        std::thread::sleep(Duration::from_secs(1));
+        // If rendering freezes
+        std::process::exit(1);
     });
 
     {
