@@ -1,6 +1,6 @@
 use std::{
     io::stdout,
-    sync::mpsc::{self, Receiver, Sender},
+    sync::atomic::{AtomicBool, Ordering},
     thread,
     time::SystemTime,
 };
@@ -17,10 +17,14 @@ mod animation;
 
 fn main() {
     let _wrapper = alternate_screen_wrapper::AlternateScreen::enter().unwrap();
-    let (tx, rx): (Sender<()>, Receiver<()>) = mpsc::channel();
+    static SHOULD_QUIT: AtomicBool = AtomicBool::new(false);
 
     thread::spawn(move || loop {
-        key_press(&tx);
+        if let Event::Key(key) = crossterm::event::read().unwrap() {
+            if key.code == KeyCode::Char('q') {
+                SHOULD_QUIT.store(true, Ordering::SeqCst);
+            }
+        }
     });
 
     {
@@ -40,7 +44,7 @@ fn main() {
         const MICROS_PER_FRAME: u128 = 30_000;
 
         loop {
-            if let Ok(_should_quit) = rx.try_recv() {
+            if SHOULD_QUIT.load(Ordering::SeqCst) {
                 break;
             }
             // Automatically skip frames when render is slow
@@ -53,17 +57,9 @@ fn main() {
                 })
                 .unwrap();
 
-            std::thread::sleep(std::time::Duration::from_micros(MICROS_PER_FRAME.try_into().unwrap()));
-        }
-    }
-}
-
-fn key_press(tx: &Sender<()>) {
-    loop {
-        if let Event::Key(key) = crossterm::event::read().unwrap() {
-            if key.code == KeyCode::Char('q') {
-                tx.send(()).unwrap();
-            }
+            std::thread::sleep(std::time::Duration::from_micros(
+                MICROS_PER_FRAME.try_into().unwrap(),
+            ));
         }
     }
 }
