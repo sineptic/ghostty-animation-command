@@ -9,29 +9,33 @@ pub const IMAGE_WIDTH: u16 = 77;
 pub const IMAGE_HEIGHT: u16 = 41;
 
 pub static FRAMES: LazyLock<[Text; 235]> = LazyLock::new(|| {
-    let mut frames = Vec::new();
-    for frame in ANIMATION_DATA.iter() {
-        let mut lines = Vec::new();
-        for &line in frame {
-            let mut spans = Vec::new();
-            let chunks = line.split("<color>").flat_map(|x| x.split("</color>"));
-            for (i, chunk) in chunks.enumerate() {
-                if i % 2 == 0 {
-                    spans.push(Span::from(chunk));
-                } else {
-                    spans.push(Span::from(chunk).blue());
-                }
-            }
-            lines.push(Line::from(spans));
-        }
-        frames.push(Text::from(lines));
-    }
-    frames.try_into().unwrap()
+    ANIMATION_DATA
+        .iter()
+        .map(|frame| {
+            frame
+                .iter()
+                .map(|&line| {
+                    let chunks = line.split("<color>").flat_map(|x| x.split("</color>"));
+                    chunks
+                        .enumerate()
+                        .map(|(i, chunk)| {
+                            if i % 2 == 0 {
+                                Span::from(chunk)
+                            } else {
+                                Span::from(chunk).blue()
+                            }
+                        })
+                        .collect::<Line>()
+                })
+                .collect::<Text>()
+        })
+        .collect::<Vec<_>>()
+        .try_into()
+        .unwrap()
 });
 
-pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
-    vec![
-    vec![
+pub static ANIMATION_DATA: [[&str; 41]; 235] = [
+    [
             "                                                                            ",
             "                                                                            ",
             "                          <color>+++==*%%%%%%%%%%%%*==+++</color>                          ",
@@ -74,7 +78,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>++++</color>              <color>++++</color>              <color>++++</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++++++++++++</color>                                ",
             "                        <color>++==*%%%**=++++++=**%%%*==++</color>                        ",
@@ -117,7 +121,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                        <color>==***%==xo</color>        <color>ox==%***==</color>                        ",
@@ -160,7 +164,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++==************==++</color>                            ",
             "                      <color>++***%=*x~</color>            <color>~x*=%***++</color>                      ",
@@ -203,7 +207,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>+==*****%%%%*****==+</color>                            ",
             "                      <color>++***%=+</color>                <color>+=%***++</color>                      ",
@@ -246,7 +250,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                          <color>+++==*%%*%%%%%%*%%*===++</color>                          ",
             "                      <color>++**=*++</color>                <color>++*=**++</color>                      ",
@@ -289,7 +293,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                          <color>++++=**%**%%%%**%**=++++</color>                          ",
             "                      <color>==****++</color>                <color>++*=**==</color>                      ",
@@ -332,7 +336,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                          <color>++++==**%%%%%%%%**==++++</color>                          ",
             "                      <color>+=***%==</color>                <color>==%***=+</color>                      ",
@@ -375,7 +379,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                          <color>++++==***%%%%%%***==++++</color>                          ",
             "                      <color>+=****=*o~</color>            <color>~o*=%***=+</color>                      ",
@@ -418,7 +422,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                          <color>xx++==************==++xx</color>                          ",
             "                      <color>++***%*%++</color>            <color>++%*%***++</color>                      ",
@@ -461,7 +465,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++==********==++++</color>                            ",
             "                      <color>++*****%**+x</color>        <color>x+**%*****++</color>                      ",
@@ -504,7 +508,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++++========++++++</color>                            ",
             "                      <color>++==***%*%**==++++==**%*%***==++</color>                      ",
@@ -547,7 +551,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++++++====++++++++</color>                            ",
             "                      <color>++++*******%********%*******++++</color>                      ",
@@ -590,7 +594,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==*****%*%%%%%%*%*****==++</color>                        ",
@@ -633,7 +637,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++++++++++++</color>                                ",
             "                        <color>xx++==****************==++xx</color>                        ",
@@ -676,7 +680,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                    <color>xxxx</color>                                    ",
             "                          <color>++++==************==++++</color>                          ",
@@ -719,7 +723,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>++++++============++++++</color>                          ",
@@ -762,7 +766,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>++++++++++++++++++++</color>                            ",
@@ -805,7 +809,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
@@ -848,7 +852,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                  <color>++++++++</color>                                  ",
@@ -891,7 +895,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -934,7 +938,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -977,7 +981,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1020,7 +1024,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1063,7 +1067,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1106,7 +1110,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1149,7 +1153,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>xxxx</color>              <color>xxxx</color>                <color>xx</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1192,7 +1196,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++++</color>          <color>xx++=+++</color>            <color>++=+++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1235,7 +1239,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++======++</color>        <color>+=++====++</color>        <color>++======++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1278,7 +1282,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++****==++</color>        <color>++==**=+++</color>        <color>++==**==++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1321,7 +1325,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>+++==*%%*===++</color>    <color>++===*%%**=+=+</color>      <color>+==***==++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1364,7 +1368,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++==*%%%%**=++</color>    <color>++==**%%%*===+</color>      <color>++=*%%**==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1407,7 +1411,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++==*%%%%%**++</color>    <color>++++*%%%%%%*+++x</color>    <color>++**%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1450,7 +1454,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++==*%%%%%%*==++</color>    <color>==*%%%%%%*==++</color>    <color>++**%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1493,7 +1497,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>xx++***%%%%**=++</color>    <color>++**%%%%%%**++</color>    <color>++=**%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1536,7 +1540,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>+=**%%%%%%**++</color>    <color>++***%%%%***+++x</color>  <color>++==*%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1579,7 +1583,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++==*%%%%*%*==xx</color>  <color>++==*%*%%%%*==++</color>    <color>++**%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1622,7 +1626,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++</color>  <color>x+==*%*%%%%*==++</color>    <color>==**%%%%%%**=+</color>    <color>+=**%***++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -1665,7 +1669,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++</color>    <color>+=***%%%%%**==</color>    <color>++==*%*%%%%*==+x</color>  <color>x+==***=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                    <color>++++++</color>                                  ",
@@ -1708,7 +1712,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++xx</color>  <color>x+==*%%%%%%*==++</color>  <color>x+++**%%%%%*==++</color>    <color>++****++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                <color>++++======++++</color>                              ",
@@ -1751,7 +1755,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++</color>    <color>++****%%%***++</color>    <color>++==**%%%***+++x</color>  <color>++==**++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>x+++==******===+++</color>                            ",
@@ -1794,7 +1798,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++xx</color>  <color>x+==********==+x</color>    <color>++********==++</color>    <color>++==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>xx===***%%%%%%%%***=++</color>                          ",
@@ -1837,7 +1841,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>x++=++</color>    <color>++==********++xx</color>  <color>xx++********++++</color>    <color>++++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>++==***%*%%%%%%%%%**=+++</color>                        ",
@@ -1880,7 +1884,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++++++</color>    <color>++==******==++</color>    <color>++==******==++</color>    <color>x+++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                    <color>xx++++++</color>                                ",
             "                            <color>++***%*%*%****%%%%$%**==</color>                        ",
@@ -1923,7 +1927,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++==++++</color>    <color>++++****==++++</color>    <color>x+++==***=+++x</color>    <color>xx</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>xx++++++++xx</color>                              ",
             "                          <color>x+==***%****======%%%%%%==++</color>                      ",
@@ -1966,7 +1970,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++</color>      <color>++++======++</color>      <color>x+++======++++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>++++====++++xx</color>                            ",
             "                          <color>x+==***%=*=+xooox+==%%%*%*==</color>                      ",
@@ -2009,7 +2013,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++</color>      <color>xx++++++++++xx</color>      <color>++++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++++========++++</color>                            ",
             "                          <color>++==**=*==+x~····~x+**%%%%*=+x</color>                    ",
@@ -2052,7 +2056,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++++++</color>        <color>++++++++++</color>        <color>++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++======**====++</color>                            ",
             "                          <color>++****=*++o~</color>      <color>·~++%*$%**++</color>                    ",
@@ -2095,7 +2099,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                    <color>++++++++</color>          <color>xx+++++xxx</color>          <color>++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++====*****=**=+++</color>                          ",
             "                          <color>++***%==++</color>        <color>··x+**$%**++</color>                    ",
@@ -2138,7 +2142,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                          <color>++++</color>              <color>++++</color>                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++===*******===+++</color>                          ",
             "                          <color>++****=*+x</color>          <color>o+**%**=++</color>                    ",
@@ -2181,7 +2185,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                               <color>x++===*******===+++</color>                          ",
             "                          <color>++**=*==+x</color>          <color>o+**%**=++</color>                    ",
@@ -2224,7 +2228,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++===*******===+++</color>                          ",
             "                          <color>+=***%==x~</color>          <color>o+**$%*=++</color>                    ",
@@ -2267,7 +2271,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++==*********==+xx</color>                          ",
             "                        <color>x+==**=*+=o~</color>        <color>··++%*%%*=++</color>                    ",
@@ -2310,7 +2314,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====******====++</color>                            ",
             "                        <color>x+==**=*++o·</color>        <color>~x==%*%*==</color>                      ",
@@ -2353,7 +2357,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++=====*****====++</color>                            ",
             "                        <color>++***%=*=+o·</color>        <color>x+**%%**=+</color>                      ",
@@ -2396,7 +2400,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++====**====++++</color>                            ",
             "                        <color>++***%=*==o~</color>    <color>·</color> <color>o+*=%%%*==++</color>                      ",
@@ -2439,7 +2443,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx+++===========++xx</color>                            ",
             "                      <color>++++***%=*==xx~~~~ox==******+++x</color>                      ",
@@ -2482,7 +2486,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++++++====++++++</color>                              ",
             "                      <color>++==**%%*%**==++++==**%*****++</color>                        ",
@@ -2525,7 +2529,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++++++++++++++++</color>                              ",
             "                      <color>++==***%%%************%***==++</color>                        ",
@@ -2568,7 +2572,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++++++++++</color>                                ",
             "                      <color>++++****%%%%%%%%%%%%%*****++xx</color>                        ",
@@ -2611,7 +2615,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++++++++++</color>                                ",
             "                      <color>++++*****%*%%%%%%*%%****==++</color>                          ",
@@ -2654,7 +2658,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>xx++++++++</color>                                  ",
             "                      <color>xx++==*******%%*******==++++</color>                          ",
@@ -2697,7 +2701,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>xxxxxxxx</color>                                    ",
             "                        <color>++++==**************==++++</color>                          ",
@@ -2740,7 +2744,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                        <color>xx++++==********====++++</color>                            ",
@@ -2783,7 +2787,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++++==========++++xx</color>                            ",
@@ -2826,7 +2830,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>++++++++++++++++++</color>                              ",
@@ -2869,7 +2873,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++++++++++++xx</color>                              ",
@@ -2912,7 +2916,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                  <color>++++xx++</color>                                  ",
@@ -2955,7 +2959,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -2998,7 +3002,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3041,7 +3045,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3084,7 +3088,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3127,7 +3131,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3170,7 +3174,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3213,7 +3217,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                            <color>xx</color>                <color>++</color>                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3256,7 +3260,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                          <color>++++++</color>            <color>+++++++x</color>                        ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3299,7 +3303,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++</color>        <color>x++=====++xx</color>        <color>++======++</color>                      ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3342,7 +3346,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++</color>      <color>++++****==++</color>        <color>+==***==++</color>                      ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3385,7 +3389,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++=+++</color>    <color>++===*%%*==+++</color>      <color>++==*%%**=++</color>      <color>xx</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3428,7 +3432,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++====++</color>    <color>++==**%%%**=++</color>      <color>++=**%%%*==+x</color>     <color>++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3471,7 +3475,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**==xx</color>  <color>xx==**%%%%%*==++</color>    <color>++**%%%%%*==++</color>    <color>++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3514,7 +3518,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**==++</color>    <color>++**%%%%%*==++</color>    <color>+=***%%%%%**++</color>    <color>++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3557,7 +3561,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%**++</color>    <color>++**%%%%$%**=+</color>    <color>++==*%%%%*%*==++</color>  <color>++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3600,7 +3604,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++=**%**=+</color>    <color>++***%%%%*%*++xx</color>  <color>++==*%%%%*%*==++</color>  <color>xx</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3643,7 +3647,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++***%%*++xx</color>  <color>++==*%%%%*%**=++</color>  <color>++==*%*%%%%***++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3686,7 +3690,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%*==xx</color>  <color>x+==*%*%%%%*==++</color>    <color>==**%$%%%%**=+</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -3729,7 +3733,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%*==++</color>    <color>==**%%%%%***++</color>    <color>++***%%%%%**++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                    <color>++++</color>                                    ",
@@ -3772,7 +3776,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%**=++</color>    <color>++***%%%%***++</color>    <color>++***%%%%%**++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                <color>++++====++++++</color>                              ",
@@ -3815,7 +3819,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==******++</color>    <color>++****%%%***++</color>    <color>++==**%%%***==+x</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++==****==++++</color>                              ",
@@ -3858,7 +3862,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==******++</color>    <color>++==********++xx</color>  <color>++==********==++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>+++=**%%%%%%%%**=+++</color>                            ",
@@ -3901,7 +3905,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==******++</color>    <color>++==********+++x</color>  <color>xx++********==+x</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>++==**%%*%%%%%%*%%**==++</color>                          ",
@@ -3944,7 +3948,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>x+++****==++</color>    <color>++++********++++</color>    <color>++==******=++x</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>xx++++xx</color>                                  ",
             "                          <color>===*%%%%*%****%*%%%%*===</color>                          ",
@@ -3987,7 +3991,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++==**==++</color>      <color>++==****==++++</color>    <color>++++****==++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>xx++++++++xx</color>                                ",
             "                        <color>x+==*%*%*%========%*%*%*==+x</color>                        ",
@@ -4030,7 +4034,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>x+++====++++</color>      <color>++++======++xx</color>    <color>++++======++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++====++++xx</color>                              ",
             "                        <color>++==*%**==++oooo++==**%*==++</color>                        ",
@@ -4073,7 +4077,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++</color>      <color>++++++++++++</color>        <color>++++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++============++</color>                              ",
             "                        <color>++**%%=*++o~····~o++*=%%**++</color>                        ",
@@ -4116,7 +4120,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++</color>        <color>+++++++++x</color>        <color>++++++++++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                        <color>+=***%==+o</color>        <color>o+==%***=+</color>                        ",
@@ -4159,7 +4163,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++</color>          <color>xxxx++xxxx</color>          <color>++++++++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                      <color>xx+=***%==x~</color>        <color>~x==%***=+xx</color>                      ",
@@ -4202,7 +4206,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>xx++xx</color>            <color>xx++xx</color>            <color>xx++++</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++==********==++xx</color>                            ",
             "                      <color>x+==*%**=+~·</color>        <color>·~+=**%*==+x</color>                      ",
@@ -4245,7 +4249,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>+++===********===+++</color>                            ",
             "                      <color>++==*%**++~·</color>        <color>·~++**%*==+x</color>                      ",
@@ -4288,7 +4292,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>+++===********===+++</color>                            ",
             "                      <color>++==*%**++~·</color>        <color>·~++**%*==+x</color>                      ",
@@ -4331,7 +4335,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx+===********===+xx</color>                            ",
             "                      <color>++==*%**++~·</color>        <color>·~++**%*==+x</color>                      ",
@@ -4374,7 +4378,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx+===********===+xx</color>                            ",
             "                      <color>+++=****+=o·</color>        <color>·o==****=++x</color>                      ",
@@ -4417,7 +4421,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>x++====******====++x</color>                            ",
             "                      <color>++==***%==xo</color>        <color>ox==%***==+x</color>                      ",
@@ -4460,7 +4464,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++=====**=====++xx</color>                            ",
             "                      <color>++++***%**++~·</color>    <color>·~++**%***+++x</color>                      ",
@@ -4503,7 +4507,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++============++xx</color>                            ",
             "                      <color>++++**%%**==xo~~~~ox==**%%**+++x</color>                      ",
@@ -4546,7 +4550,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++====++++++</color>                              ",
             "                      <color>xx+=***%%%**==++++==**%%%***=+xx</color>                      ",
@@ -4589,7 +4593,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
             "                        <color>++*****%*%=******=%*%*****++</color>                        ",
@@ -4632,7 +4636,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==***%*%*%%%%%%*%*%***==++</color>                        ",
@@ -4675,7 +4679,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==****%%*%%%%%%*%%****==++</color>                        ",
@@ -4718,7 +4722,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++++++++++++</color>                                ",
             "                        <color>++++==******%%%*******==++++</color>                        ",
@@ -4761,7 +4765,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>++xxxx++</color>                                  ",
             "                        <color>xx++==****************==++xx</color>                        ",
@@ -4804,7 +4808,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++====********====++xx</color>                          ",
@@ -4847,7 +4851,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++++============++++xx</color>                          ",
@@ -4890,7 +4894,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>xx++++++++++++++++++</color>                            ",
@@ -4933,7 +4937,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
@@ -4976,7 +4980,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                  <color>++++++++</color>                                  ",
@@ -5019,7 +5023,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5062,7 +5066,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5105,7 +5109,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5148,7 +5152,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5191,7 +5195,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5234,7 +5238,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5277,7 +5281,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>xxxx</color>              <color>xxxx</color>              <color>xxxx</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5320,7 +5324,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++xx</color>          <color>++++++++</color>          <color>xx++++++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5363,7 +5367,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++=====+++</color>        <color>xx++=====+xx</color>        <color>+=======++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5406,7 +5410,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++==****++++</color>      <color>++==****==++</color>      <color>++++****==++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5449,7 +5453,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++=**%%**=++</color>      <color>++=**%%**=++</color>      <color>++=**%%*==++xx</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5492,7 +5496,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**%%%**=++</color>      <color>++=*%%%%*=++</color>      <color>++==*%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5535,7 +5539,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%**=+</color>    <color>++++*%%%%%%*++++</color>    <color>==**%%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5578,7 +5582,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%%*==</color>    <color>x+==*%%%%%%*==+x</color>    <color>==**%%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5621,7 +5625,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%***++xx</color>  <color>++==*%*%%*%*==++</color>  <color>xx++*%*%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5664,7 +5668,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*=+++</color>  <color>++==*%*%%*%*==++</color>  <color>x++=***%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5707,7 +5711,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*==++</color>  <color>++==*%*%%%%*==++</color>  <color>xx==*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5750,7 +5754,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*=+xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx+=*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -5793,7 +5797,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%*%%%**++xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++**%%%*%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                    <color>++++</color>                                    ",
@@ -5836,7 +5840,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%**++xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++**%%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>x</color> <color>++++====++++</color>                                ",
@@ -5879,7 +5883,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**%%%***++xx</color>  <color>++==***%%***==++</color>  <color>xx++***%%%**==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++==****==++++</color>                              ",
@@ -5922,7 +5926,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==********++xx</color>  <color>++==********==++</color>  <color>xx++********==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>+++=**%%%%%%%%**=+++</color>                            ",
@@ -5965,7 +5969,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==********++</color>    <color>x+++********+++x</color>    <color>++********==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>++==**%%*%%%%%%*%%**==++</color>                          ",
@@ -6008,7 +6012,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++******==++</color>    <color>++++********++++</color>    <color>++==******++++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>xx++++xx</color>                                  ",
             "                          <color>===*%%%%*%****%*%%%%*===</color>                          ",
@@ -6051,7 +6055,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++==****==++</color>      <color>++==****==++</color>      <color>++==****==++++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>xx++++++++xx</color>                                ",
             "                        <color>x++=*%*%*%========%*%*%*=++x</color>                        ",
@@ -6094,7 +6098,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>x++++=====++++</color>      <color>++++====++++</color>      <color>++++======+++x</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++====++++xx</color>                              ",
             "                        <color>++==*%**==++oooo++==**%*==++</color>                        ",
@@ -6137,7 +6141,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++++</color>      <color>x++++++++++x</color>      <color>++++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++============++</color>                              ",
             "                        <color>++**%%=*++o~····~o++*=%%**++</color>                        ",
@@ -6180,7 +6184,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++xx</color>      <color>++++++++++++</color>      <color>x</color> <color>++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                        <color>+=***%==+o</color>        <color>ox==%***=+</color>                        ",
@@ -6223,7 +6227,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++++</color>          <color>++++++++</color>          <color>++++++++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                      <color>xx+=***%==x~</color>        <color>~x==%***=+xx</color>                      ",
@@ -6266,7 +6270,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>++++</color>              <color>++++</color>              <color>++++</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++==********===+xx</color>                            ",
             "                      <color>++==*%**=+~·</color>        <color>·~+=**%*==++</color>                      ",
@@ -6309,7 +6313,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++==********===+++</color>                            ",
             "                      <color>++==*%**++~·</color>        <color>·~++**%*==++</color>                      ",
@@ -6352,7 +6356,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++==********===+++</color>                            ",
             "                      <color>++==*%**++~·</color>        <color>·~++**%*==++</color>                      ",
@@ -6395,7 +6399,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++==********===+xx</color>                            ",
             "                      <color>++==*%**++~·</color>        <color>·~++**%*==++</color>                      ",
@@ -6438,7 +6442,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++==********===+xx</color>                            ",
             "                      <color>+++=****==o·</color>        <color>·o==****=+++</color>                      ",
@@ -6481,7 +6485,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>x+++===******====++x</color>                            ",
             "                      <color>++==***%=*xo</color>        <color>ox==%***==++</color>                      ",
@@ -6524,7 +6528,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++=====**=====++xx</color>                            ",
             "                      <color>+++=***%**++~·</color>    <color>·~++**%***++++</color>                      ",
@@ -6567,7 +6571,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++============++xx</color>                            ",
             "                      <color>++++**%%=*==xo~~~~ox==**%%**++++</color>                      ",
@@ -6610,7 +6614,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++====++++++</color>                              ",
             "                      <color>xx+=***%%%**==++++==**%%%***=+xx</color>                      ",
@@ -6653,7 +6657,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
             "                        <color>++*****%*%=******=%*%*****++</color>                        ",
@@ -6696,7 +6700,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==***%*%*%%%%%%*%*%***==++</color>                        ",
@@ -6739,7 +6743,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==****%%*%%%%%%*%%****==++</color>                        ",
@@ -6782,7 +6786,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++++++++++++</color>                                ",
             "                        <color>++++==******%%%%******==++++</color>                        ",
@@ -6825,7 +6829,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>++xxxx++</color>                                  ",
             "                        <color>xx++==****************==++xx</color>                        ",
@@ -6868,7 +6872,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++====********====++xx</color>                          ",
@@ -6911,7 +6915,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++++============++++xx</color>                          ",
@@ -6954,7 +6958,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>++++++++++++++++++++</color>                            ",
@@ -6997,7 +7001,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
@@ -7040,7 +7044,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                  <color>++++++++</color>                                  ",
@@ -7083,7 +7087,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7126,7 +7130,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7169,7 +7173,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7212,7 +7216,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7255,7 +7259,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7298,7 +7302,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7341,7 +7345,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>xxxx</color>              <color>xxxx</color>              <color>xxxx</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7384,7 +7388,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++xx</color>          <color>++++++++</color>          <color>xx+==+++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7427,7 +7431,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>+++====+++</color>        <color>xx++====++xx</color>        <color>++======++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7470,7 +7474,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++==****++++</color>      <color>++==****==++</color>      <color>++++****==++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7513,7 +7517,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++=**%%**=++</color>      <color>++=**%%**=++</color>      <color>++=**%%*==++xx</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7556,7 +7560,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**%%%**=++</color>      <color>++=*%%%%*=++</color>      <color>++==*%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7599,7 +7603,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%**==</color>    <color>++++*%%%%%%*++++</color>    <color>==**%%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7642,7 +7646,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%%*==</color>    <color>x+==*%%%%%%*==++</color>    <color>==**%%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7685,7 +7689,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%***++xx</color>  <color>++==*%*%%*%*==++</color>  <color>xx++*%*$%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7728,7 +7732,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*=+++</color>  <color>++==*%*%%*%*==++</color>  <color>+++=*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7771,7 +7775,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++***%%%%*%*==++</color>  <color>++==*%*%%*%*==++</color>  <color>x+==*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7814,7 +7818,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*=+xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -7857,7 +7861,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%*%%%**++xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++**%%%*%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                    <color>++++</color>                                    ",
@@ -7900,7 +7904,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%**++xx</color>  <color>++==*%%%%%%*==++</color>  <color>x+++**%%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>x</color> <color>++++====++++</color>                                ",
@@ -7943,7 +7947,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**%%%***++xx</color>  <color>++==***%%***==++</color>  <color>xx++***%%%**==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++==****==++++</color>                              ",
@@ -7986,7 +7990,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==********++xx</color>  <color>++==********==++</color>  <color>xx++********==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>+++=**%%%%%%%%**=+++</color>                            ",
@@ -8029,7 +8033,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==********++</color>    <color>x+++********+++x</color>    <color>++********==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>++==**%%*%%%%%%*%%**==++</color>                          ",
@@ -8072,7 +8076,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++******==++</color>    <color>++++********++++</color>    <color>++==******++++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>xx++++xx</color>                                  ",
             "                          <color>===*%%%%*%****%*%%%%*===</color>                          ",
@@ -8115,7 +8119,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++==****==++</color>      <color>++==****==++</color>      <color>++==****==++++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>xx++++++++xx</color>                                ",
             "                        <color>x+==*%*%*%========%*%*%*=++x</color>                        ",
@@ -8158,7 +8162,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>xx+++=====++++</color>      <color>++++====++++</color>      <color>++++======+++x</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++====++++xx</color>                              ",
             "                        <color>++==*%**==++oooo++==**%*==++</color>                        ",
@@ -8201,7 +8205,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++++</color>      <color>x++++++++++x</color>      <color>++++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                        <color>==**%%=*++oo····~o++*=%%**++</color>                        ",
@@ -8244,7 +8248,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++++++++++xx</color>      <color>++++++++++++</color>      <color>xx++++++++++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                        <color>+=***%==+o</color>        <color>o+==%***=+</color>                        ",
@@ -8287,7 +8291,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++++</color>          <color>++++++++</color>          <color>++++++++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++====****====++</color>                              ",
             "                      <color>x++=***%==x~</color>        <color>~x==%***=+xx</color>                      ",
@@ -8330,7 +8334,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>++++</color>              <color>++++</color>              <color>++++xx</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++==********===+xx</color>                            ",
             "                      <color>x+==*%**=+~·</color>        <color>·~+=**%*==++</color>                      ",
@@ -8373,7 +8377,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++==********===+++</color>                            ",
             "                      <color>x+==*%**++~·</color>        <color>·~+=**%*==++</color>                      ",
@@ -8416,7 +8420,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>++++==********===+++</color>                            ",
             "                      <color>x+==*%**++~·</color>        <color>·~++**%*==++</color>                      ",
@@ -8459,7 +8463,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>x+++==********===+xx</color>                            ",
             "                      <color>x+==*%**++~·</color>        <color>·~++**%*==++</color>                      ",
@@ -8502,7 +8506,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++==********===+xx</color>                            ",
             "                      <color>x++=****==x·</color>        <color>·x==****=+++</color>                      ",
@@ -8545,7 +8549,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>x+++===******====++x</color>                            ",
             "                      <color>x+==***%=*xo</color>        <color>ox==%***==++</color>                      ",
@@ -8588,7 +8592,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++=====**=====++xx</color>                            ",
             "                      <color>+++=***%**++~·</color>    <color>·~++**%***++++</color>                      ",
@@ -8631,7 +8635,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                            <color>xx++============++xx</color>                            ",
             "                      <color>++++**%%**==xo~~~~ox==**%%**++++</color>                      ",
@@ -8674,7 +8678,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++====++++++</color>                              ",
             "                      <color>xx+=***%%%**==++++==**%%%***=+xx</color>                      ",
@@ -8717,7 +8721,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
             "                        <color>++*****%*%=******=%*%*****++</color>                        ",
@@ -8760,7 +8764,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==***%*%*%%%%%%*%*%***==++</color>                        ",
@@ -8803,7 +8807,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                              <color>xx++++++++++++xx</color>                              ",
             "                        <color>++==****%%*%%%%%%*%%****==++</color>                        ",
@@ -8846,7 +8850,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                <color>++++++++++++</color>                                ",
             "                        <color>++++==*******%%*******==++++</color>                        ",
@@ -8889,7 +8893,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                  <color>++xxxx++</color>                                  ",
             "                        <color>xx++==****************==++xx</color>                        ",
@@ -8932,7 +8936,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++====********====++xx</color>                          ",
@@ -8975,7 +8979,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>xx++++============++++xx</color>                          ",
@@ -9018,7 +9022,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>xx++++++++++++++++++</color>                            ",
@@ -9061,7 +9065,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++++++++++++++</color>                              ",
@@ -9104,7 +9108,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                  <color>++++++++</color>                                  ",
@@ -9147,7 +9151,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9190,7 +9194,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9233,7 +9237,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9276,7 +9280,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9319,7 +9323,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9362,7 +9366,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                                                                            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9405,7 +9409,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                  <color>xxxx</color>              <color>xxxx</color>              <color>xxxx</color>                  ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9448,7 +9452,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "                <color>++++++xx</color>          <color>++++++++</color>          <color>xx++==++</color>                ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9491,7 +9495,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++=====+++</color>        <color>xx++====++xx</color>        <color>+=======++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9534,7 +9538,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++==****++++</color>      <color>++==****==++</color>      <color>++++****==++</color>              ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9577,7 +9581,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "              <color>++=**%%**=++</color>      <color>++=**%%**=++</color>      <color>++=**%%%==++xx</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9620,7 +9624,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**%%%**=++</color>      <color>++=**%%%*=++</color>      <color>++=**%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9663,7 +9667,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%**==</color>    <color>++++*%%%%%%*++++</color>    <color>==**%%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9706,7 +9710,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%%*==</color>    <color>x+==*%%%%%%*==+x</color>    <color>==*%%%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9749,7 +9753,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%***++xx</color>  <color>++==*%*%%*%*==++</color>  <color>xx++*%*%%%%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9792,7 +9796,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*=+++</color>  <color>++==*%*%%*%*==++</color>  <color>+++=*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9835,7 +9839,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*==++</color>  <color>++==*%*%%%%*==++</color>  <color>++==*%*%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9878,7 +9882,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%*%*=+xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++*%*%%%%***++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                                                            ",
@@ -9921,7 +9925,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%*%%%**++xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++**%%%*%*==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                    <color>++++</color>                                    ",
@@ -9964,7 +9968,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==*%%%%%**++xx</color>  <color>++==*%%%%%%*==++</color>  <color>xx++**%%%%%**=++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                                <color>++++====++++</color>                                ",
@@ -10007,7 +10011,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==**%%%***++xx</color>  <color>++==***%%***==++</color>  <color>xx++***%%%**==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                              <color>++++==****==++++</color>                              ",
@@ -10050,7 +10054,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==********++xx</color>  <color>++==********==++</color>  <color>xx++********==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                            <color>+++=**%%%%%%%%**=+++</color>                            ",
@@ -10093,7 +10097,7 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++==********++</color>    <color>x+++********+++x</color>    <color>++********==++</color>            ",
             "                                                                                        "
         ],
-        vec![
+        [
             "                                                                            ",
             "                                                                            ",
             "                          <color>++==**%%*%%%%%%*%%**==++</color>                          ",
@@ -10136,5 +10140,4 @@ pub static ANIMATION_DATA: LazyLock<Vec<Vec<&str>>> = LazyLock::new(|| {
             "            <color>++++******==++</color>    <color>++++********++++</color>    <color>++==******+++x</color>            ",
             "                                                                                        "
         ]
-]
-});
+];
