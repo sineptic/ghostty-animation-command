@@ -1,27 +1,31 @@
 use std::{
-    io::{stdout, Write},
-    thread,
+    io::{stdout, Read, Write},
+    process::exit,
     time::SystemTime,
 };
 
 use animation::FRAMES;
-use crossterm::event::{Event, KeyCode};
 
 mod animation;
 
 fn main() {
     let _wrapper = alternate_screen_wrapper::AlternateScreen::enter().unwrap();
 
-    thread::spawn(move || loop {
-        if let Event::Key(key) = crossterm::event::read().unwrap() {
-            if key.code == KeyCode::Char('q') {
-                let result = alternate_screen_wrapper::restore_terminal();
-                if let Err(err) = result {
-                    eprintln!("Error: {err}");
-                }
-                std::process::exit(0);
+    std::thread::spawn(move || {
+        let mut stdin = std::io::stdin();
+        let mut buf = [0; 1024];
+        loop {
+            let count = stdin.read(&mut buf).unwrap();
+            if buf[..count].contains(&b'q') {
+                break;
             }
         }
+        let result = alternate_screen_wrapper::restore_terminal();
+        if let Err(err) = result {
+            eprintln!("Error: {err}");
+            exit(1);
+        }
+        exit(0);
     });
 
     let start = SystemTime::now();
