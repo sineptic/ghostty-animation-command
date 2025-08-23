@@ -32,40 +32,40 @@ fn main() {
     const MICROS_PER_FRAME: u64 = 30_000;
 
     let mut stdout = stdout();
-    crossterm::execute!(
-        stdout,
-        crossterm::cursor::Hide,
-        crossterm::terminal::DisableLineWrap
-    )
-    .unwrap();
+
+    // hide cursor
+    stdout.write_all(b"\x1B[?25l").unwrap();
+    // disable line wrap
+    stdout.write_all(b"\x1B[?7l").unwrap();
     loop {
         // Automatically skip frames when render is slow
         let frame_number =
             (start.elapsed().unwrap().as_micros() / MICROS_PER_FRAME as u128) as usize;
         let frame = &FRAMES[frame_number % FRAMES.len()];
+        // TODO: use syscall to get size of /dev/tty
         let (width, height) = crossterm::terminal::size().unwrap();
         let width_gap = width.saturating_sub(animation::IMAGE_WIDTH) / 2;
         let height_gap = height.saturating_sub(animation::IMAGE_HEIGHT) / 2;
 
-        crossterm::execute!(
-            stdout,
-            crossterm::terminal::BeginSynchronizedUpdate,
-            crossterm::terminal::Clear(crossterm::terminal::ClearType::All),
-        )
-        .unwrap();
+        // clear screen
+        stdout.write_all(b"\x1B[2J").unwrap();
+
         for (i, line) in frame
             .iter()
             .enumerate()
             .take_while(|(i, _line)| *i as u16 <= height)
         {
-            crossterm::execute!(
-                stdout,
-                crossterm::cursor::MoveTo(width_gap, i as u16 + height_gap)
-            )
-            .unwrap();
+            // move cursor
+            stdout
+                .write_fmt(format_args!(
+                    "\x1B[{};{}H",
+                    i as u16 + height_gap + 1, // height
+                    width_gap + 1,             // width
+                ))
+                .unwrap();
             stdout.write_all(line.to_string().as_bytes()).unwrap();
         }
-        crossterm::execute!(stdout, crossterm::terminal::EndSynchronizedUpdate).unwrap();
+        stdout.flush().unwrap();
 
         std::thread::sleep(std::time::Duration::from_micros(MICROS_PER_FRAME));
     }
