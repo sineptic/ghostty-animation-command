@@ -1,4 +1,5 @@
 use std::{
+    fs::File,
     io::{stdout, Read, Write},
     process::exit,
     time::SystemTime,
@@ -44,8 +45,11 @@ fn main() {
         let frame_number =
             (start.elapsed().unwrap().as_micros() / MICROS_PER_FRAME as u128) as usize;
         let frame = &FRAMES[frame_number % FRAMES.len()];
-        // TODO: use syscall to get size of /dev/tty
-        let (width, height) = crossterm::terminal::size().unwrap();
+        let rustix::termios::Winsize {
+            ws_row: height,
+            ws_col: width,
+            ..
+        } = rustix::termios::tcgetwinsize(File::open("/dev/tty").unwrap()).unwrap();
         let width_gap = width.saturating_sub(animation::IMAGE_WIDTH) / 2;
         let height_gap = height.saturating_sub(animation::IMAGE_HEIGHT) / 2;
 
