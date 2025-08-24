@@ -9,7 +9,9 @@ use animation::FRAMES;
 mod animation;
 
 fn main() {
-    let _wrapper = alternate_screen_wrapper::AlternateScreen::enter().unwrap();
+    let _wrapper = alternate_screen_wrapper::unix::AlternateScreenOnStdout::enter()
+        .unwrap()
+        .unwrap();
 
     std::thread::spawn(move || {
         let mut stdin = std::io::stdin();
@@ -20,7 +22,7 @@ fn main() {
                 break;
             }
         }
-        let result = alternate_screen_wrapper::restore_terminal();
+        let result = alternate_screen_wrapper::unix::restore_terminal();
         if let Err(err) = result {
             eprintln!("Error: {err}");
             exit(1);

@@ -4,11 +4,11 @@ version = 4
 
 [[package]]
 name = "alternate_screen_wrapper"
-version = "0.2.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc36e6963bc28165a412719cbc895f4087f9544aaf712d38920e92df3881c387"
+checksum = "e98e083d0efac55904fb7e7d27a44771001b4e7e471e6431f2f01d849db9a632"
 dependencies = [
- "crossterm",
+ "rustix",
 ]
 
 [[package]]
