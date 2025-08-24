@@ -6,7 +6,6 @@ use std::{
 };
 
 use animation::FRAMES;
-
 mod animation;
 
 fn main() {
